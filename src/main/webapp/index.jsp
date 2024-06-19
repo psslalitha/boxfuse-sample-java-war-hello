@@ -91,7 +91,7 @@
         <div class="product">
             <img src="https://via.placeholder.com/150" alt="Fruit">
             <h3>Fruits</h3>
-            <p>List of fruits...</p>
+            <p>List of fruits--mango,apple,starwberry</p>
             <a href="#" class="add-to-cart">Add to Cart</a>
         </div>
         <!-- Repeat for other categories -->
