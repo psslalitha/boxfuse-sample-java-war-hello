@@ -80,7 +80,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>TOMCAT-BlickIT</h1>
+        <h1>DEV-branch</h1>
     </div>
     <div class="search-container">
         <input type="text" placeholder="Search for products...">
