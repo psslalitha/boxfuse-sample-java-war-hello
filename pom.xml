@@ -64,15 +64,14 @@
         </plugins>
     </build>
 
-    <!-- Distribution Management for deploying artifacts -->
     <distributionManagement>
         <snapshotRepository>
             <id>nexusRepo</id>
-            <url>http://13.232.45.92:8081/repository/sample-snapshots/</url>
+            <url>http://65.0.27.76:8081/repository/sample-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>nexusRepo</id>
-            <url>http://13.232.45.92:8081/repository/sample-releases/</url>
+            <url>http://65.0.27.76:8081/repository/sample-releases/</url>
         </repository>
     </distributionManagement>
 </project>
