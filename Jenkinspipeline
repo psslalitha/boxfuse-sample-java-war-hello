@@ -33,7 +33,8 @@ pipeline {
                     sh """
                     ssh-keyscan -H ${TOMCAT_SERVER} >> ~/.ssh/known_hosts
                     scp ${WAR_FILE_NAME} ubuntu@${TOMCAT_SERVER}:${TOMCAT_DEPLOY_PATH}
-                    ssh ubuntu@13.235.13.56 'sh /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
+                    ssh ubuntu@${TOMCAT_SERVER} 'chmod +x /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
+                    ssh ubuntu@13.235.13.56 'sudo sh /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
                     """
                 }
             }
