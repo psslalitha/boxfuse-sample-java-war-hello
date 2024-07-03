@@ -30,8 +30,8 @@ pipeline {
             steps {
                 sshagent([TOMCAT_CREDENTIALS_ID]) {
                     sh """
-                    scp ${WAR_FILE_NAME} ubuntu@${TOMCAT_SERVER}:${TOMCAT_DEPLOY_PATH}
-                    ssh ubuntu@${TOMCAT_SERVER} 'systemctl restart tomcat'
+                    scp hello-9.5.4.war ubuntu@13.235.13.56:/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps
+                    ssh ubuntu@13.235.13.56 'sh /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
                     """
                 }
             }
