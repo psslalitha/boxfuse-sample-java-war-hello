@@ -1,21 +1,23 @@
 pipeline {
     agent any
     environment {
-        NEXUS_URL = "http://13.233.123.230:8081/repository/sample-releases/"
-        NEXUS_CREDENTIALS_ID = "nexus-id"
-        TOMCAT_HOST = "13.233.165.16"
-        TOMCAT_USER = "ubuntu"
-        TOMCAT_SSH_CREDENTIALS_ID = "ssh-tomcat-id"
+        NEXUS_URL = "http://13.233.123.230:8081/repository/sample-releases"
+        NEXUS_CREDENTIALS_ID = "nexus-id" // Replace with your actual credentials ID
         WAR_FILE = "hello-9.5.4.war"
         DEPLOY_PATH = "/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps"
+        TOMCAT_HOST = "13.233.165.16" // Correct IP address of your Tomcat server
+        TOMCAT_USER = "ubuntu" // Username for SSH
+        TOMCAT_SSH_CREDENTIALS_ID = "ssh-tomcat-id"
     }
     stages {
         stage('Download WAR from Nexus') {
             steps {
                 script {
-                    sh """
-                    curl -u \$NEXUS_USERNAME:\$NEXUS_PASSWORD \$NEXUS_URL/\$WAR_FILE -o \$WAR_FILE
-                    """
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        sh """
+                        curl -u \$NEXUS_USERNAME:\$NEXUS_PASSWORD \$NEXUS_URL/\$WAR_FILE -o \$WAR_FILE
+                        """
+                    }
                 }
             }
         }
@@ -24,7 +26,7 @@ pipeline {
                 script {
                     sshagent(['ssh-tomcat-id']) {
                         sh """
-                        scp hello-9.5.4.war ubuntu@:13.233.165.16/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps
+                        scp \$WAR_FILE \$TOMCAT_USER@\$TOMCAT_HOST:\$DEPLOY_PATH
                         """
                     }
                 }
