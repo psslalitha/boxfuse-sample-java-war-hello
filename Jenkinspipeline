@@ -21,6 +21,17 @@ pipeline {
                 }
             }
         }
+        stage('Add Host Key to Known Hosts') {
+            steps {
+                script {
+                    sshagent(['ssh-tomcat-id']) {
+                        sh """
+                        ssh-keyscan \$TOMCAT_HOST >> ~/.ssh/known_hosts
+                        """
+                    }
+                }
+            }
+        }
         stage('Deploy to Tomcat') {
             steps {
                 script {
