@@ -1,49 +1,42 @@
 pipeline {
-    agent { label 'tomcat-node' }
-
-
+    agent any
     environment {
-        NEXUS_URL = 'http://15.207.18.67:8081/repository/sample-releases/'
-        NEXUS_CREDENTIALS_ID = 'nexus-id'
-        TOMCAT_SERVER = '13.235.13.56'
-        TOMCAT_CREDENTIALS_ID = 'ssh-agent'
-        TOMCAT_DEPLOY_PATH = '/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps'
-        WAR_FILE_NAME = 'hello-9.5.4.war'
+        NEXUS_URL = "http://13.233.123.230:8081/repository/sample-releases/"
+        NEXUS_CREDENTIALS_ID = "nexus-id"
+        TOMCAT_HOST = "13.233.165.16"
+        TOMCAT_USER = "ubuntu"
+        TOMCAT_SSH_CREDENTIALS_ID = "ssh-tomcat-id"
+        WAR_FILE = "hello-9.5.4.war"
+        DEPLOY_PATH = "/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps"
     }
-
     stages {
         stage('Download WAR from Nexus') {
             steps {
                 script {
-                    def warFilePath = "${env.WORKSPACE}/${WAR_FILE_NAME}"
-                    def artifactUrl = "${NEXUS_URL}/${WAR_FILE_NAME}"
-
-                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh """
+                    curl -u \$NEXUS_USERNAME:\$NEXUS_PASSWORD \$NEXUS_URL/\$WAR_FILE -o \$WAR_FILE
+                    """
+                }
+            }
+        }
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    sshagent(['ssh-tomcat-id']) {
                         sh """
-                        curl -u ${NEXUS_USER}:${NEXUS_PASS} -o ${warFilePath} ${artifactUrl}
+                        scp hello-9.5.4.war ubuntu@:13.233.165.16/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps
                         """
                     }
                 }
             }
         }
-
-        stage('Deploy WAR to Tomcat') {
-            steps {
-                sshagent([TOMCAT_CREDENTIALS_ID]) {
-                    sh """
-                    ssh-keyscan -H 13.235.13.56 >> ~/.ssh/known_hosts
-                    scp hello-9.5.4.war ubuntu@13.235.13.56:/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps
-                    ssh ubuntu@13.235.13.56 'chmod +x /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
-                    ssh ubuntu@13.235.13.56 'sudo sh /home/ubuntu/tomcat/apache-tomcat-9.0.90/bin/startup.sh'
-                    """
-                }
-            }
-        }
     }
-
     post {
-        always {
-            cleanWs()
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
         }
     }
 }
