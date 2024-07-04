@@ -70,7 +70,7 @@
         </snapshotRepository>
         <repository>
             <id>nexusRepo</id>
-            <url>http://13.233.123.230:8081/repository/sample-releases/<url>
+            <url>http://13.233.123.230:8081/repository/sample-releases/</url>
         </repository>
     </distributionManagement>
 </project>
