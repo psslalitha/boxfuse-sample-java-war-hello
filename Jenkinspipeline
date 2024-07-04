@@ -24,7 +24,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    sshagent(credentials:['ssh-tomcat-id']) {
+                    sshagent(['ssh-tomcat-id']) {
                         sh """
                         scp hello-9.5.4.war ubuntu@13.233.165.16:/home/ubuntu/tomcat/apache-tomcat-9.0.90/webapps
                         """
